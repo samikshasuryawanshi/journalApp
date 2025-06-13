@@ -8,13 +8,15 @@ import {
 } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
+import EntryDetail from './components/EntryDetail';
 
-// Separate component to use `useLocation` safely
+// Protected routing component
 function AppRoutes({ isLoggedIn, onLogin, onLogout }) {
   const location = useLocation();
 
   return (
     <Routes>
+      {/* Root Route */}
       <Route
         path="/"
         element={
@@ -25,6 +27,8 @@ function AppRoutes({ isLoggedIn, onLogin, onLogout }) {
           )
         }
       />
+
+      {/* Dashboard Route */}
       <Route
         path="/dashboard"
         element={
@@ -35,6 +39,20 @@ function AppRoutes({ isLoggedIn, onLogin, onLogout }) {
           )
         }
       />
+
+      {/* Entry Detail Route */}
+      <Route
+        path="/entry/:id"
+        element={
+          isLoggedIn ? (
+            <EntryDetail />
+          ) : (
+            <Navigate to="/" replace state={{ from: location }} />
+          )
+        }
+      />
+
+      {/* Fallback Route */}
       <Route
         path="*"
         element={<Navigate to={isLoggedIn ? '/dashboard' : '/'} replace />}
@@ -43,6 +61,7 @@ function AppRoutes({ isLoggedIn, onLogin, onLogout }) {
   );
 }
 
+// Main App
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
