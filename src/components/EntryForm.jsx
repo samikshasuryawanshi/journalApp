@@ -3,7 +3,7 @@ import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import { addEntry } from '../utils/indexedDB';
 
-export default function EntryForm({ refreshEntries, selectedDate }) {
+export default function EntryForm({ refreshEntries, selectedDate, userEmail }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [mood, setMood] = useState('');
@@ -22,12 +22,20 @@ export default function EntryForm({ refreshEntries, selectedDate }) {
       return;
     }
 
-    await addEntry({
-      title,
-      content,
-      mood,
-      date: (selectedDate || new Date()).toISOString(),
-    });
+    if (!userEmail) {
+      setError('User not authenticated.');
+      return;
+    }
+
+    await addEntry(
+      {
+        title,
+        content,
+        mood,
+        date: (selectedDate || new Date()).toISOString(),
+      },
+      userEmail
+    );
 
     setTitle('');
     setContent('');
@@ -43,7 +51,7 @@ export default function EntryForm({ refreshEntries, selectedDate }) {
       onSubmit={handleSubmit}
       className="rounded-2xl shadow-xl p-8 space-y-6 transition-all duration-300 border border-white/10 hover:shadow-2xl hover:scale-[1.01] mb-4"
       style={{
-        background: 'rgba(17, 21, 17, 0.45)',         // glassmorphism black
+        background: 'rgba(17, 21, 17, 0.45)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
         color: 'white',
@@ -92,7 +100,7 @@ export default function EntryForm({ refreshEntries, selectedDate }) {
         <textarea
           rows="5"
           maxLength={maxChars}
-          className="w-full px-4 py-3 rounded-lg  border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"
+          className="w-full px-4 py-3 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"
           placeholder="Write your thoughts..."
           value={content}
           onChange={(e) => setContent(e.target.value)}

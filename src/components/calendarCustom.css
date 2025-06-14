@@ -1,0 +1,44 @@
+.react-calendar {
+  width: 100% !important;
+  max-width: 100%;
+  background-color: white;
+  color: #222;
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: inherit;
+}
+
+.react-calendar__tile {
+  height: 2.5rem;
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Weekdays styling */
+.react-calendar__month-view__weekdays {
+  display: flex;
+  justify-content: space-around;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+/* 🔷 Entry day (has journal) */
+.highlight-entry {
+  background-color: #93c5fd !important; /* Tailwind blue-300 */
+  color: #1e40af !important;            /* Tailwind blue-900 */
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+/* 🌟 Today */
+.highlight-today {
+  background-color: #fef08a !important; /* Tailwind yellow-200 */
+  color: #92400e !important;            /* Tailwind amber-800 */
+  font-weight: bold;
+  border-radius: 6px;
+}

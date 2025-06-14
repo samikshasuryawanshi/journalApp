@@ -1,22 +1,34 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import './calendarCustom.css';
 
 export default function CalendarView({ entries, onDateSelect = () => {} }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const datesWithEntries = entries.map(e => new Date(e.date).toDateString());
+  const todayStr = new Date().toISOString().split('T')[0];
+  const entryDatesSet = new Set(
+    entries.map(entry => new Date(entry.date).toISOString().split('T')[0])
+  );
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
     onDateSelect(date);
-    setShowCalendar(false); // auto-hide
+    setShowCalendar(false);
+  };
+
+  const formatDisplayDate = (date) => {
+    return date.toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   return (
     <div className="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md text-gray-800 dark:text-white">
-      {/* Toggle Calendar */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => setShowCalendar(!showCalendar)}
@@ -40,11 +52,13 @@ export default function CalendarView({ entries, onDateSelect = () => {} }) {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
           <Calendar
             onChange={handleDateChange}
-            tileClassName={({ date }) =>
-              datesWithEntries.includes(date.toDateString())
-                ? 'text-green-500 font-semibold'
-                : ''
-            }
+            tileClassName={({ date }) => {
+              const dateStr = date.toISOString().split('T')[0];
+
+              if (dateStr === todayStr) return 'highlight-today';
+              if (entryDatesSet.has(dateStr)) return 'highlight-entry';
+              return '';
+            }}
           />
         </div>
       )}
@@ -53,7 +67,7 @@ export default function CalendarView({ entries, onDateSelect = () => {} }) {
         <div className="mt-6 text-lg font-medium text-center">
           📅 Selected:{' '}
           <span className="text-green-500">
-            {selectedDate.toLocaleDateString()} at {selectedDate.toLocaleTimeString()}
+            {formatDisplayDate(selectedDate)}
           </span>
         </div>
       )}
